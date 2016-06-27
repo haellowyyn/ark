@@ -3,6 +3,9 @@
 
 extern crate rlibc;
 
+mod uart;
+mod versatilepb;
+
 #[no_mangle]
 pub extern "C" fn rust_main() -> ! {
     println(b"Hello, World!");
@@ -11,15 +14,12 @@ pub extern "C" fn rust_main() -> ! {
     loop {}
 }
 
-// This is specific to the 'versatilepb' machine.
-// http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0224i/Chdbeibh.html
-const UART0: *mut u8 = 0x101f1000 as *mut _;
 
 fn println(string: &[u8]) {
     for c in string {
-        unsafe { *UART0 = *c };
+        uart::send(*c);
     }
-    unsafe { *UART0 = b'\n' };
+    uart::send(b'\n');
 }
 
 
