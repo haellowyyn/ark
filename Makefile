@@ -3,23 +3,26 @@ CFLAGS=-ansi -pedantic -Wall -Wextra -fPIC
 LD=aarch64-linux-gnu-ld
 LDFLAGS=-N -Ttext=0x10000 --gc-sections
 
-LOADER=boot.o
-RUST_LIB=target/aarch64-unknown-linux-gnu/debug/libark.a
+LIBARK=target/aarch64-unknown-linux-gnu/debug/libark.a
 
-kernel: $(LOADER) $(RUST_LIB)
-	$(LD) $(LDFLAGS) -o $@ $(LOADER) $(RUST_LIB)
+ark: boot.o $(LIBARK)
+	$(LD) $(LDFLAGS) -o $@ $^
 
-$(LOADER): src/boot.S
-	$(CC) $(CFLAGS) -o $@ -c $<
+boot.o: src/boot.S
+	$(CC) $(CFLAGS) -o $@ -c $^
 
-$(RUST_LIB):
+# Bogus .FORCE prequisite ensures cargo is invoked on every build.
+.FORCE:
+$(LIBARK): .FORCE
 	cargo build --target=aarch64-unknown-linux-gnu
 
+.PHONY: clean
 clean:
 	cargo clean
-	rm -f $(LOADER) kernel
+	rm -f boot.o ark
 
-run: kernel
+.PHONY: run
+run: ark
 	qemu-system-aarch64 -M versatilepb -cpu cortex-a57 \
 	 	-nographic \
 		-kernel $<
