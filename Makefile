@@ -14,7 +14,7 @@ boot.o: src/boot.S
 # Bogus .FORCE prequisite ensures cargo is invoked on every build.
 .FORCE:
 $(LIBARK): .FORCE
-	cargo build --target=aarch64-unknown-linux-gnu
+	cargo build
 
 .PHONY: clean
 clean:
