@@ -7,7 +7,7 @@ macro_rules! sysreg{
     }}
 }
 
-/// Set the system register specified by $name to $val.
+/// Set the system register specified by `$name` to `$val`.
 macro_rules! set_sysreg{
     ( $name:expr, $val:expr ) => {{
         asm!(concat!("msr ", $name, ", $0") :: "r"($val));

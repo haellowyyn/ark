@@ -1,4 +1,4 @@
-use uart;
+use board::uart;
 
 pub fn main() -> ! {
     println(b"Entered user mode.");

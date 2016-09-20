@@ -1,7 +1,7 @@
 //! Controls for the ARM PrimeCell UART (PL011).
 //! ref: "ARM PrimeCell UART (PL011) Technical Reference Manual"
 
-use versatilepb::UART0;
+use board::UART0;
 
 const UARTDR: usize = 0x000;
 const UARTFR: usize = 0x018;

@@ -6,9 +6,10 @@ extern crate rlibc;
 
 #[macro_use]
 mod macros;
-mod uart;
-mod versatilepb;
+mod board;
 mod usermode;
+
+use board::uart;
 
 #[no_mangle]
 pub extern "C" fn rust_main() {
