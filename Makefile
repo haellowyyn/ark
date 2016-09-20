@@ -24,5 +24,5 @@ clean:
 .PHONY: run
 run: ark
 	qemu-system-aarch64 -M versatilepb -cpu cortex-a57 \
-	 	-nographic \
-		-kernel $<
+		-serial stdio \
+		-kernel $< \

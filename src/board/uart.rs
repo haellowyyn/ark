@@ -1,19 +1,18 @@
 //! Controls for the ARM PrimeCell UART (PL011).
-//! ref: "ARM PrimeCell UART (PL011) Technical Reference Manual"
+//! ref: "ARM PrimeCell UART (PL011) Technical Reference Manual" [pl011-trm]
 
-use board::UART0;
+use board::UART0_BASE;
 
-const UARTDR: usize = 0x000;
-const UARTFR: usize = 0x018;
+// UART registers [pl011-trm 3.2]
+const UARTDR: *mut u8 = (UART0_BASE + 0x000) as *mut u8;   // data register
+const UARTFR: *mut u16 = (UART0_BASE + 0x018) as *mut u16; // flag register
 
-const UARTFR_TXFF: u16 = 1 << 5;
+// UARTFR flags [pl011-trm 3.3.3]
+const UARTFR_TXFF: u16 = 0b1 << 5;
 
 pub fn send(c: u8) {
-    let dr = (UART0 + UARTDR) as *mut u8;
-    let fr = (UART0 + UARTFR) as *mut u16;
-
     unsafe {
-        while *fr & UARTFR_TXFF != 0 {}
-        *dr = c;
+        while *UARTFR & UARTFR_TXFF != 0 {}
+        *UARTDR = c;
     }
 }
