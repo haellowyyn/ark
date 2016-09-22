@@ -21,20 +21,14 @@ const LCDTFT: u32 = 0b1 << 5;       // LCD if TFT
 const LCDPWR: u32 = 0b1 << 11;      // LCD power enable
 
 
-
-// frame buffer memory address
-const FRAMEBASE: u32 = 0x20000;
-
-pub fn init() {
-    unsafe {
-        // Load timing registers for 800x600 resolution [pl110-trm 4.7.2].
-        *SYS_OSC4 = 0x2cac;
-        *LCDTIM0 = 0x1313A4C4;
-        *LCDTIM1 = 0x0505F657;
-        *LCDTIM2 = 0x071F1800;
-        // Load address of frame buffer.
-        *LCDUPBASE = FRAMEBASE;
-        // Set control flags.
-        *LCDCTRL = LCDEN | LCDBPP_24 | LCDTFT | LCDPWR;
-    }
+pub unsafe fn init(framebase: u32) {
+    // Load timing registers for 800x600 resolution [pl110-trm 4.7.2].
+    *SYS_OSC4 = 0x2cac;
+    *LCDTIM0 = 0x1313A4C4;
+    *LCDTIM1 = 0x0505F657;
+    *LCDTIM2 = 0x071F1800;
+    // Load address of frame buffer.
+    *LCDUPBASE = framebase;
+    // Set control flags.
+    *LCDCTRL = LCDEN | LCDBPP_24 | LCDTFT | LCDPWR;
 }

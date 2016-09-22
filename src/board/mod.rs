@@ -1,8 +1,8 @@
 //! Code specific to the 'versatilepb' board.
 //! ref: "RealView Platform Baseboard for ARM926EJ-S User Guide" [virtualpb-ug]
 
-pub mod uart;
 pub mod clcdc;
+pub mod uart;
 
 // status and system control registers [virtualpb-ug 4.3]
 const SYS_OSC4: *mut u32 = 0x1000001C as *mut u32;

@@ -6,25 +6,18 @@ extern crate rlibc;
 
 #[macro_use]
 mod macros;
-mod board;
-mod usermode;
 
-use board::{uart, clcdc};
+mod board;
+mod color;
+mod io;
+mod usermode;
 
 #[no_mangle]
 pub extern "C" fn rust_main() {
-    println(b"Booted to Rust.");
+    io::println(b"Booted to Rust.");
 
-    println(b"Initializing display...");
-    clcdc::init();
-
-    // TODO remove
-    unsafe {
-        for i in 0..(800 * 600 / 2) {
-            let px = (0x20000 + i * 8) as *mut u64;
-            *px = 0x00362c0400362c04;
-        }
-    }
+    io::println(b"Initializing console...");
+    io::init_console();
 
     unsafe { enter_usermode() }
 }
@@ -36,12 +29,6 @@ unsafe fn enter_usermode() {
     asm!("eret");
 }
 
-fn println(string: &[u8]) {
-    for c in string {
-        uart::send(*c);
-    }
-    uart::send(b'\n');
-}
 
 #[lang = "eh_personality"]
 extern "C" fn eh_personality() {}
