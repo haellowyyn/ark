@@ -1,5 +1,6 @@
 #![feature(lang_items)]
 #![feature(asm)]
+#![feature(const_fn)]
 #![no_std]
 
 extern crate rlibc;
@@ -8,7 +9,6 @@ extern crate rlibc;
 mod macros;
 
 mod board;
-mod color;
 mod io;
 mod usermode;
 
@@ -35,6 +35,8 @@ extern "C" fn eh_personality() {}
 
 #[lang = "panic_fmt"]
 extern "C" fn panic_fmt() -> ! {
+    // TODO print something useful and halt
+    io::println(b"panic!");
     loop {}
 }
 

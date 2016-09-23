@@ -1,5 +1,4 @@
 mod console;
-mod video;
 
 use board::uart;
 

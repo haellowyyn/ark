@@ -8,7 +8,7 @@ _start:
 
 init_stack:
 	/* sp alignment: last 4 bits must always be 0b0000 [armv8-arm D1.8.2] */
-	ldr x0, =0x500
+	ldr x0, =0x4000
 	mov sp, x0
 	ret
 
