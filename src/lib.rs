@@ -3,6 +3,8 @@
 #![feature(const_fn)]
 #![no_std]
 
+use core::fmt;
+
 extern crate rlibc;
 extern crate spin;
 
@@ -14,10 +16,12 @@ mod board;
 mod usermode;
 
 #[no_mangle]
-pub extern "C" fn rust_main() {
+pub extern "C" fn rust_main() -> ! {
     println!("Booted to Rust.");
 
     unsafe { enter_usermode() }
+
+    panic!("unreachable");
 }
 
 unsafe fn enter_usermode() {
@@ -28,15 +32,17 @@ unsafe fn enter_usermode() {
 }
 
 
-#[lang = "eh_personality"]
-extern "C" fn eh_personality() {}
-
+/// Panic handler.
 #[lang = "panic_fmt"]
-extern "C" fn panic_fmt() -> ! {
-    // TODO print something useful and halt
-    println!("panic!");
+extern "C" fn panic_fmt(fmt: fmt::Arguments, file: &str, line: u32) -> ! {
+    println!("!! PANIC at {}:{}: \"{}\"", file, line, fmt);
+
     loop {}
 }
+
+
+#[lang = "eh_personality"]
+extern "C" fn eh_personality() {}
 
 #[allow(non_snake_case)]
 #[no_mangle]
