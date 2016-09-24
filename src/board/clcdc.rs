@@ -26,12 +26,21 @@ const LCDTFT: u32 = 0b1 << 5;       // LCD if TFT
 const LCDPWR: u32 = 0b1 << 11;      // LCD power enable
 
 
-pub unsafe fn init(framebase: u32) {
-    // Load timing registers for 800x600 resolution [pl110-trm 4.7.2].
-    *SYS_OSC4 = 0x2cac;
-    *LCDTIM0 = 0x1313A4C4;
-    *LCDTIM1 = 0x0505F657;
-    *LCDTIM2 = 0x071F1800;
+pub unsafe fn init(width: usize, height: usize, framebase: u32) {
+    // Load timing registers depending on the resolution [pl110-trm 4.7.2].
+    let (osc4, tim0, tim1, tim2) = match (width, height) {
+        (240, 320) => (0x2C77, 0xC7A7BF38, 0x595B613F, 0x04eF1800),
+        (320, 240) => (0x2C77, 0x9F7FBF4C, 0x818360eF, 0x053F1800),
+        (176, 220) => (0x2C77, 0xe7C7BF28, 0x8B8D60DB, 0x04AF1800),
+        (640, 480) => (0x2C77, 0x3F1F3F9C, 0x090B61DF, 0x067F1800),
+        (800, 600) => (0x2cac, 0x1313A4C4, 0x0505F657, 0x071F1800),
+        _ => panic!("unsupported screen resolution"),
+    };
+    *SYS_OSC4 = osc4;
+    *LCDTIM0 = tim0;
+    *LCDTIM1 = tim1;
+    *LCDTIM2 = tim2;
+
     // Load address of frame buffer.
     *LCDUPBASE = framebase;
     // Set control flags.

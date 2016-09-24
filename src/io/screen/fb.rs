@@ -22,7 +22,7 @@ impl Color {
     }
 
     pub fn blend(&self, other: Color, opacity: u8) -> Self {
-        // TODO check opacity <= 100
+        assert!(opacity <= 100);
 
         let (fgr, fgg, fgb) = (other.red as u32, other.green as u32, other.blue as u32);
         let fgopa = opacity as u32;
@@ -45,7 +45,6 @@ impl FrameBuf {
     }
 
     pub fn set(&mut self, x: usize, y: usize, color: Color) {
-        // TODO bounds check
         let &mut FrameBuf(ref mut buf) = self;
         buf[y][x] = color;
     }

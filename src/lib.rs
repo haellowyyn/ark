@@ -19,16 +19,22 @@ mod usermode;
 pub extern "C" fn rust_main() -> ! {
     println!("Booted to Rust.");
 
-    unsafe { enter_usermode() }
+    let (_start, _end): (usize, usize);
+    unsafe { asm!("ldr $0, =_start; ldr $1, =_end" : "=r"(_start), "=r"(_end)) }
+    println!("Kernel loaded at {:#x} - {:#x}", _start, _end);
+
+    enter_usermode();
 
     panic!("unreachable");
 }
 
-unsafe fn enter_usermode() {
-    set_sysreg!("SPSR_EL1", 0x0);
-    set_sysreg!("ELR_EL1", usermode::main as usize);
-    set_sysreg!("SP_EL0", reg!("sp"));
-    asm!("eret");
+fn enter_usermode() {
+    unsafe {
+        set_sysreg!("SPSR_EL1", 0x0);
+        set_sysreg!("ELR_EL1", usermode::main as usize);
+        set_sysreg!("SP_EL0", reg!("sp"));
+        asm!("eret");
+    }
 }
 
 
