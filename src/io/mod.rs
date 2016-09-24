@@ -1,19 +1,27 @@
 mod console;
+mod serial;
 
-use board::uart;
+use core::fmt;
+use core::fmt::Write;
 
-pub fn init_console() {
+
+/// Print line to screen and serial output.
+macro_rules! println {
+    ($fmt:expr) => (print!(concat!($fmt, "\n")));
+    ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
+}
+
+/// Print to screen and serial output.
+macro_rules! print {
+    ($($arg:tt)*) => ($crate::io::_print(format_args!($($arg)*)));
+}
+
+
+pub fn init() {
     console::init();
 }
 
-pub fn print(string: &[u8]) {
-    for c in string {
-        uart::send(*c);
-    }
-    console::write(string);
-}
-
-pub fn println(string: &[u8]) {
-    print(string);
-    print(b"\n");
+pub fn _print(args: fmt::Arguments) {
+    let mut serial_writer = serial::WRITER.lock();
+    serial_writer.write_fmt(args).unwrap();
 }

@@ -4,20 +4,21 @@
 #![no_std]
 
 extern crate rlibc;
+extern crate spin;
 
 #[macro_use]
 mod macros;
-
 mod board;
+#[macro_use]
 mod io;
 mod usermode;
 
 #[no_mangle]
 pub extern "C" fn rust_main() {
-    io::println(b"Booted to Rust.");
+    println!("Booted to Rust.");
 
-    io::println(b"Initializing console...");
-    io::init_console();
+    println!("Initializing I/O...");
+    io::init();
 
     unsafe { enter_usermode() }
 }
@@ -36,7 +37,7 @@ extern "C" fn eh_personality() {}
 #[lang = "panic_fmt"]
 extern "C" fn panic_fmt() -> ! {
     // TODO print something useful and halt
-    io::println(b"panic!");
+    println!("panic!");
     loop {}
 }
 

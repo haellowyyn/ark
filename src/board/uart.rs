@@ -10,7 +10,7 @@ const UARTFR: *mut u16 = (UART0_BASE + 0x018) as *mut u16; // flag register
 // UARTFR flags [pl011-trm 3.3.3]
 const UARTFR_TXFF: u16 = 0b1 << 5;
 
-pub fn send(c: u8) {
+pub fn write(c: u8) {
     unsafe {
         while *UARTFR & UARTFR_TXFF != 0 {}
         *UARTDR = c;
