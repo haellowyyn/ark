@@ -51,14 +51,16 @@ impl FrameBuf {
     }
 
     pub fn scroll(&mut self, dy: usize, fill: Color) {
-        // TODO check dy < HEIGHT
         let &mut FrameBuf(ref mut buf) = self;
-        for y in 0..HEIGHT {
-            buf[y] = if y < HEIGHT - dy {
-                buf[y + dy]
-            } else {
-                [fill; WIDTH]
-            };
+        for y in 0..(HEIGHT - dy) {
+            for x in 0..WIDTH {
+                buf[y][x] = buf[y + dy][x];
+            }
+        }
+        for y in (HEIGHT - dy)..HEIGHT {
+            for x in 0..WIDTH {
+                buf[y][x] = fill;
+            }
         }
     }
 }
