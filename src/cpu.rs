@@ -1,3 +1,12 @@
+/// Return the value of the register specified by `$name`.
+macro_rules! reg{
+    ( $name:expr ) => {{
+        let val: u64;
+        asm!(concat!("mov $0, ", $name) : "=r"(val));
+        val
+    }}
+}
+
 /// Return the value of the system register specified by `$name`.
 macro_rules! sysreg{
     ( $name:expr ) => {{

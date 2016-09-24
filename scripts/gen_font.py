@@ -21,14 +21,19 @@ def gen_symbol(char):
 
 with open("font.rs", "w") as f:
     symbol_len = SYMBOL_WIDTH * SYMBOL_HEIGHT
-    f.write("pub const SYMBOLS: &'static [&'static [u8; {}]] = &[\n".format(symbol_len))
-
     symbols = "".join([string.digits, string.letters, string.punctuation, " "])
+
+    f.write("pub const SYMBOLS: &'static [Option<&'static [u8; {}]>] = &[\n".format(symbol_len))
     for i in range(256):
-        char = chr(i) if chr(i) in symbols else "?"
-        sym = gen_symbol(char)
-        f.write("\t&{},\n".format(sym))
+        if chr(i) not in symbols:
+            f.write("\tNone,\n")
+            continue
+        sym = gen_symbol(chr(i))
+        f.write("\tSome(&{}),\n".format(sym))
 
     f.write("];\n")
+
+    nonprintable = gen_symbol("\x01")
+    f.write("pub const NONPRINTABLE: &'static [u8; {}] = &{};\n".format(symbol_len, nonprintable))
 
 subprocess.call(["rustfmt", "--write-mode", "Overwrite", "font.rs"])

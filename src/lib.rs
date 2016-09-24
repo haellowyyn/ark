@@ -7,10 +7,10 @@ extern crate rlibc;
 extern crate spin;
 
 #[macro_use]
-mod macros;
-mod board;
-#[macro_use]
 mod io;
+#[macro_use]
+mod cpu;
+mod board;
 mod usermode;
 
 #[no_mangle]
@@ -23,7 +23,7 @@ pub extern "C" fn rust_main() {
 unsafe fn enter_usermode() {
     set_sysreg!("SPSR_EL1", 0x0);
     set_sysreg!("ELR_EL1", usermode::main as usize);
-    set_sysreg!("SP_EL0", 0x1000);
+    set_sysreg!("SP_EL0", reg!("sp"));
     asm!("eret");
 }
 

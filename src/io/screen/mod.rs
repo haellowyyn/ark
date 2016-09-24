@@ -52,7 +52,11 @@ impl Writer {
         match b {
             b'\n' => self.newline(),
             _ => {
-                self.write_symbol(font::SYMBOLS[b as usize]);
+                let symbol = match font::SYMBOLS[b as usize] {
+                    Some(sym) => sym,
+                    None => font::NONPRINTABLE,
+                };
+                self.write_symbol(symbol);
                 self.advance();
             }
         }
