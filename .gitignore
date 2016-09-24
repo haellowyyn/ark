@@ -1,3 +1,4 @@
 *.o
 ark
+ark.dbg
 target
