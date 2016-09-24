@@ -17,9 +17,6 @@ mod usermode;
 pub extern "C" fn rust_main() {
     println!("Booted to Rust.");
 
-    println!("Initializing I/O...");
-    io::init();
-
     unsafe { enter_usermode() }
 }
 

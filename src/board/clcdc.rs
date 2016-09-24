@@ -8,11 +8,16 @@ use board::SYS_OSC4;
 use board::CLCDC_BASE;
 
 // CLCDC register offsets [pl110-trm 3.1]
-const LCDTIM0: *mut u32 = (CLCDC_BASE + 0x000) as *mut u32;    // horizontal axis panel control register
-const LCDTIM1: *mut u32 = (CLCDC_BASE + 0x004) as *mut u32;    // vertical axis panal control register
-const LCDTIM2: *mut u32 = (CLCDC_BASE + 0x008) as *mut u32;    // clock and signal polarity control register
-const LCDUPBASE: *mut u32 = (CLCDC_BASE + 0x010) as *mut u32;  // upper panel frame base address register
-const LCDCTRL: *mut u32 = (CLCDC_BASE + 0x018) as *mut u32;    // control register
+// horizontal axis panel control register
+const LCDTIM0: *mut u32 = (CLCDC_BASE + 0x000) as *mut u32;
+// vertical axis panal control register
+const LCDTIM1: *mut u32 = (CLCDC_BASE + 0x004) as *mut u32;
+// clock and signal polarity control register
+const LCDTIM2: *mut u32 = (CLCDC_BASE + 0x008) as *mut u32;
+// upper panel frame base address register
+const LCDUPBASE: *mut u32 = (CLCDC_BASE + 0x010) as *mut u32;
+// control register
+const LCDCTRL: *mut u32 = (CLCDC_BASE + 0x018) as *mut u32;
 
 // LCDCTRL flags [pl110-trm 3.2.7]
 const LCDEN: u32 = 0b1 << 0;        // LCD controller enable
