@@ -1,4 +1,4 @@
 *.o
-ark
-ark.dbg
+ark.release
+ark.debug
 target
