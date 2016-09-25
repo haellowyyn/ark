@@ -1,7 +1,7 @@
 CC=aarch64-linux-gnu-gcc
 CFLAGS=-ansi -pedantic -Wall -Wextra -fPIC
 LD=aarch64-linux-gnu-ld
-LDFLAGS=-N -Ttext=0x10000 --gc-sections
+LDFLAGS=-T linker.ld --gc-sections
 
 
 ark: ark.release
