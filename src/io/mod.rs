@@ -7,13 +7,13 @@ mod serial;
 
 /// Print line to screen and serial output.
 macro_rules! println {
-    ($fmt:expr) => (print!(concat!($fmt, "\n")));
-    ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
+    ($fmt:expr) => { print!(concat!($fmt, "\n")) };
+    ($fmt:expr, $($arg:tt)*) => { print!(concat!($fmt, "\n"), $($arg)*) };
 }
 
 /// Print to screen and serial output.
 macro_rules! print {
-    ($($arg:tt)*) => ($crate::io::_print(format_args!($($arg)*)));
+    ($($arg:tt)*) => { $crate::io::_print(format_args!($($arg)*)) };
 }
 
 
