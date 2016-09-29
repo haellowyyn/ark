@@ -2,20 +2,20 @@ ENTRY(_entry)
 
 SECTIONS
 {
-  /* guard page */
-  . = 0x1000;
+  . = 0xffffff8000000000;
 
   _krnl_start = .;
 
   /* executable code, RX */
-  .text : ALIGN(4K) {
+  .text : AT(ADDR(.text) - 0xffffff8000000000) {
     _text_start = .;
+    *(.boot)
     *(.text .text.*)
     _text_end = .;
   }
 
   /* read-only data, R */
-  .rodata : ALIGN(4K) {
+  .rodata ALIGN(4K) : AT(ADDR(.rodata) - 0xffffff8000000000) {
     _rodata_start = .;
     *(.rodata .rodata.*)
     *(.gcc_except_table)
@@ -23,7 +23,7 @@ SECTIONS
   }
 
   /* read-write data, RW */
-  .data : ALIGN(4K) {
+  .data ALIGN(4K) : AT(ADDR(.data) - 0xffffff8000000000) {
     _data_start = .;
     *(.data .data.*)
     *(.got) *(.got.plt)
@@ -31,7 +31,7 @@ SECTIONS
   }
 
   /* uninitialized data, RW */
-  .bss : ALIGN(4K) {
+  .bss ALIGN(4K) : AT(ADDR(.bss) - 0xffffff8000000000) {
     _bss_start = .;
     *(.bss .bss.*)
     _bss_end = .;

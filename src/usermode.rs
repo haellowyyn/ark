@@ -1,5 +1,7 @@
-pub fn main() -> ! {
-    println!("Entered user mode.");
+// No entering user mode until we have set up the user mode translation tables.
 
-    loop {}
-}
+// pub fn main() -> ! {
+//     println!("Entered user mode.");
+//
+//     loop {}
+// }

@@ -31,8 +31,8 @@ mod board;
 mod usermode;
 
 #[no_mangle]
-pub extern "C" fn rust_main() -> ! {
-    println!("Booted to Rust.");
+pub extern "C" fn kernel() -> ! {
+    println!("Reached the kernel.");
 
     unsafe {
         println!("kernel loaded at: {:#p}-{:#p}", &_krnl_start, &_krnl_end);
@@ -43,19 +43,22 @@ pub extern "C" fn rust_main() -> ! {
         println!("kernel stack: {:#p}-{:#p}", &_stack_bottom, &_stack_top);
     }
 
-    enter_usermode();
+    loop {}
+
+    // No entering user mode until we have set up the user mode translation tables.
+    // enter_usermode();
 }
 
-fn enter_usermode() -> ! {
-    unsafe {
-        set_sysreg!("SPSR_EL1", 0x0);
-        set_sysreg!("ELR_EL1", usermode::main as usize);
-        set_sysreg!("SP_EL0", reg!("sp"));
-        asm!("eret");
-    }
-
-    unreachable!();
-}
+// fn enter_usermode() -> ! {
+//     unsafe {
+//         set_sysreg!("SPSR_EL1", 0x0);
+//         set_sysreg!("ELR_EL1", usermode::main as usize);
+//         set_sysreg!("SP_EL0", reg!("sp"));
+//         asm!("eret");
+//     }
+//
+//     unreachable!();
+// }
 
 
 /// Panic handler.
