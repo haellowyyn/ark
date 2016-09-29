@@ -31,11 +31,11 @@ pub struct Writer {
 impl Writer {
     const fn new() -> Self {
         Writer {
-            initialized: false,
             x_pos: 0,
             fgcolor: DEFAULT_FGCOLOR,
             bgcolor: DEFAULT_BGCOLOR,
             fb: FrameBuf::new([[DEFAULT_BGCOLOR; fb::WIDTH]; fb::HEIGHT]),
+            initialized: false,
         }
     }
 
@@ -44,6 +44,7 @@ impl Writer {
 
         let framebase = &self.fb as *const _ as u32;
         unsafe { clcdc::init(fb::WIDTH, fb::HEIGHT, framebase) };
+        self.initialized = true;
     }
 
     fn write_byte(&mut self, b: u8) {
