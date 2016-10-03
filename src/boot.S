@@ -17,8 +17,7 @@ _entry:
 	 * available virtual address space (to 1024 GB) but also makes address
 	 * translation start at level 1 instead of level 0 [armv8-arm 4.2.5].
 	 * As level-1 tables can map 1-GB pages, this enables us to set up
-	 * initial address translation using a single-page translation table
-	 * (see _boot_translation_table below).
+	 * initial address translation using a single-page translation table.
 	 *
 	 * By pointing both TTBR0_EL1 and TTBR1_EL1 to this translation table,
 	 * we map the first GB of physical memory into the virtual memory space
@@ -35,13 +34,32 @@ _entry:
   ldr x0, =0x500190019
 	msr TCR_EL1, x0
 
-	/* Point TTBR0_EL1 and TTBR1_EL1 to the boot translation table.
-	 * We subtract 0xffffff8000000000 from the VA of the boot translation
+  /* Set required entries in the boot translation table:
+   * - first entry identity maps the first 1 GB of physical memory
+   * - last entry points to the beginning of the translation table, enabling
+   *   recusive mapping [http://wiki.osdev.org/Page_Tables#Recursive_mapping]
+   *
+   * We must subtract 0xffffff8000000000 from the VA of the boot translation
 	 * table to optain its PA.
-	 */
-	ldr x0, =(_boot_translation_table - 0xffffff8000000000)
-	msr TTBR0_EL1, x0
-	msr TTBR1_EL1, x0
+   */
+  ldr x1, =(_boot_translation_table - 0xffffff8000000000)
+  /* First entry:
+   * - last two bits = 01 -> block descriptor
+   * - set access flag to prevent AF faults
+   */
+  ldr x0, =0x0000000000000401
+  str x0, [x1, 0]
+  /* Last entry:
+   * - last two bits = 11 -> table descriptor, page descriptor at level 3
+   * - set access flag to prevent AF faults at level 3
+   */
+  ldr x2, =0x403
+  orr x0, x1, x2
+  str x0, [x1, 511 * 8]
+
+	/* Point TTBR0_EL1 and TTBR1_EL1 to the boot translation table. */
+	msr TTBR0_EL1, x1
+	msr TTBR1_EL1, x1
 
 	/* Switch on the MMU. */
 	mrs x0, SCTLR_EL1
@@ -49,7 +67,8 @@ _entry:
 	msr SCTLR_EL1, x0
 
 	/* Jump to the high virtual memory. */
-	b _high_mem
+  ldr x0, =_high_mem
+	br x0
 
 
 _high_mem:
@@ -67,23 +86,14 @@ _high_mem:
 	b kernel
 
 
-.section .data
-
-.balign 0x1000
-_boot_translation_table:
-	/* This is the translation table used for initially loading the kernel
-	 * at VA 0xffffff8000000000. It maps a single 1-GB region in its first
-	 * entry.
-	 */
-  .quad 0x0000000000000401
-	.rept 511
-  .quad 0
-  .endr
-
-
 .section .bss
 
-/* THe kernel stack and its guard pages. */
+/* This is the translation table used for initially loading the kernel
+ * at VA 0xffffff8000000000. Entries are filled during MMU initialization. */
+.balign 0x1000
+  .lcomm _boot_translation_table, 0x1000
+
+/* The kernel stack and its guard pages. */
 .global _stack_top
 .global _stack_bottom
 
