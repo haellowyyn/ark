@@ -3,6 +3,7 @@ ENTRY(_entry)
 SECTIONS
 {
   . = 0xffffff8000000000;
+  _kspace_start = .;
 
   _krnl_start = .;
 
