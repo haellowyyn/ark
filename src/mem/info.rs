@@ -1,4 +1,4 @@
-use mem::PAddr;
+use mem::{PAddr, VAddr};
 
 
 // Linker symbols that have no associated value.
@@ -21,7 +21,16 @@ extern "C" {
 }
 
 
-macro_rules! sym_getter {
+macro_rules! va_sym {
+    ( $getter:ident, $sym:ident ) => {
+        pub fn $getter() -> VAddr {
+            unsafe { &$sym as *const _ as usize }
+        }
+    };
+}
+
+
+macro_rules! pa_sym {
     ( $getter:ident, $sym:ident ) => {
         pub fn $getter() -> PAddr {
             unsafe {
@@ -31,20 +40,22 @@ macro_rules! sym_getter {
     };
 }
 
-sym_getter!(krnl_start, _krnl_start);
-sym_getter!(krnl_end, _krnl_end);
+va_sym!(kspace_start, _kspace_start);
 
-sym_getter!(text_start, _text_start);
-sym_getter!(text_end, _text_end);
+pa_sym!(krnl_start, _krnl_start);
+pa_sym!(krnl_end, _krnl_end);
 
-sym_getter!(rodata_start, _rodata_start);
-sym_getter!(rodata_end, _rodata_end);
+pa_sym!(text_start, _text_start);
+pa_sym!(text_end, _text_end);
 
-sym_getter!(data_start, _data_start);
-sym_getter!(data_end, _data_end);
+pa_sym!(rodata_start, _rodata_start);
+pa_sym!(rodata_end, _rodata_end);
 
-sym_getter!(bss_start, _bss_start);
-sym_getter!(bss_end, _bss_end);
+pa_sym!(data_start, _data_start);
+pa_sym!(data_end, _data_end);
 
-sym_getter!(stack_bottom, _stack_bottom);
-sym_getter!(stack_top, _stack_top);
+pa_sym!(bss_start, _bss_start);
+pa_sym!(bss_end, _bss_end);
+
+pa_sym!(stack_bottom, _stack_bottom);
+pa_sym!(stack_top, _stack_top);
