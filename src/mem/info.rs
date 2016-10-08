@@ -57,5 +57,5 @@ pa_sym!(data_end, _data_end);
 pa_sym!(bss_start, _bss_start);
 pa_sym!(bss_end, _bss_end);
 
-pa_sym!(stack_bottom, _stack_bottom);
-pa_sym!(stack_top, _stack_top);
+// pa_sym!(stack_bottom, _stack_bottom);
+// pa_sym!(stack_top, _stack_top);

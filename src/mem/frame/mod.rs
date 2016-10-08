@@ -58,7 +58,7 @@ pub fn alloc() -> Option<Frame> {
     frame_allocator.alloc()
 }
 
-pub fn free(frame: Frame) {
-    let mut frame_allocator = ALLOCATOR.lock();
-    frame_allocator.free(frame);
-}
+// pub fn free(frame: Frame) {
+//     let mut frame_allocator = ALLOCATOR.lock();
+//     frame_allocator.free(frame);
+// }

@@ -30,11 +30,11 @@ const LCDPWR: u32 = 0b1 << 11;      // LCD power enable
 pub unsafe fn init(width: usize, height: usize, framebase: u32) {
     // Load timing registers depending on the resolution [pl110-trm 4.7.2].
     let (osc4, tim0, tim1, tim2) = match (width, height) {
-        (240, 320) => (0x2C77, 0xC7A7BF38, 0x595B613F, 0x04eF1800),
-        (320, 240) => (0x2C77, 0x9F7FBF4C, 0x818360eF, 0x053F1800),
-        (176, 220) => (0x2C77, 0xe7C7BF28, 0x8B8D60DB, 0x04AF1800),
-        (640, 480) => (0x2C77, 0x3F1F3F9C, 0x090B61DF, 0x067F1800),
-        (800, 600) => (0x2cac, 0x1313A4C4, 0x0505F657, 0x071F1800),
+        (240, 320) => (0x2c77, 0xc7a7bf38, 0x595b613f, 0x04ef1800),
+        (320, 240) => (0x2c77, 0x9f7fbf4c, 0x818360ef, 0x053f1800),
+        (176, 220) => (0x2c77, 0xf7c7bf28, 0x8b8d60db, 0x04af1800),
+        (640, 480) => (0x2c77, 0x3f1f3f9c, 0x090b61df, 0x067f1800),
+        (800, 600) => (0x2cac, 0x1313a4c4, 0x0505f657, 0x071f1800),
         _ => panic!("unsupported screen resolution"),
     };
     *mmio_ptr!(SYS_OSC4, u32) = osc4;

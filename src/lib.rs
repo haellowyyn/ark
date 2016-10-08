@@ -2,7 +2,11 @@
 #![feature(asm)]
 #![feature(const_fn)]
 #![feature(custom_attribute)]
+
 #![no_std]
+
+#![allow(unknown_lints)]
+#![allow(identity_op)]
 
 use core::fmt;
 
@@ -18,6 +22,7 @@ mod mem;
 mod usermode;
 
 #[no_mangle]
+#[allow(empty_loop)]
 pub extern "C" fn kernel() -> ! {
     println!("Reached the kernel.");
 
@@ -45,6 +50,7 @@ pub extern "C" fn kernel() -> ! {
 
 /// Panic handler.
 #[lang = "panic_fmt"]
+#[allow(empty_loop)]
 extern "C" fn panic_fmt(fmt: fmt::Arguments, file: &str, line: u32) -> ! {
     println!("!! PANIC at {}:{}: \"{}\"", file, line, fmt);
 
@@ -55,8 +61,9 @@ extern "C" fn panic_fmt(fmt: fmt::Arguments, file: &str, line: u32) -> ! {
 #[lang = "eh_personality"]
 extern "C" fn eh_personality() {}
 
-#[allow(non_snake_case)]
 #[no_mangle]
+#[allow(non_snake_case)]
+#[allow(empty_loop)]
 pub extern "C" fn _Unwind_Resume() -> ! {
     loop {}
 }

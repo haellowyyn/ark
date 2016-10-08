@@ -49,6 +49,7 @@ impl FrameBuf {
         buf[y][x] = color;
     }
 
+    #[allow(needless_range_loop)]
     pub fn scroll(&mut self, dy: usize, fill: Color) {
         let &mut FrameBuf(ref mut buf) = self;
         for y in 0..(HEIGHT - dy) {

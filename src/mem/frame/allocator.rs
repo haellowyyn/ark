@@ -44,10 +44,10 @@ impl Allocator {
         })
     }
 
-    pub fn free(&mut self, frame: Frame) {
-        assert!(self.initialized);
-        self.used.clear(frame.0);
-    }
+    // pub fn free(&mut self, frame: Frame) {
+    //     assert!(self.initialized);
+    //     self.used.clear(frame.0);
+    // }
 }
 
 
@@ -64,15 +64,15 @@ impl Bitmap {
         *word |= 1 << (bit_nr % 64);
     }
 
-    fn clear(&mut self, bit_nr: usize) {
-        assert!(bit_nr < NUM_FRAMES,
-                "bit_nr is {} but must not be larger than {}",
-                bit_nr,
-                NUM_FRAMES);
-
-        let mut word = &mut self.0[bit_nr / 64];
-        *word &= !(1 << (bit_nr % 64));
-    }
+    // fn clear(&mut self, bit_nr: usize) {
+    //     assert!(bit_nr < NUM_FRAMES,
+    //             "bit_nr is {} but must not be larger than {}",
+    //             bit_nr,
+    //             NUM_FRAMES);
+    //
+    //     let mut word = &mut self.0[bit_nr / 64];
+    //     *word &= !(1 << (bit_nr % 64));
+    // }
 
     fn first_free(&self) -> Option<usize> {
         for (i, &word) in self.0.iter().enumerate() {

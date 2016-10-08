@@ -22,14 +22,14 @@ pub mod uart;
 #[allow(unused_attributes)]
 #[rustfmt_skip]
 pub const MMIO_REGIONS: &'static [(PAddr, PAddr)] = &[
-    (0x10000000, 0x10000FFF),  // System registers
-    (0x10120000, 0x1012FFFF),  // Color LCD controller
-    (0x101F1000, 0x101F1FFF),  // UART0 interface
+    (0x10000000, 0x10000fff),  // System registers
+    (0x10120000, 0x1012ffff),  // Color LCD controller
+    (0x101f1000, 0x101f1fff),  // UART0 interface
 ];
 
 
 // status and system control registers [virtualpb-ug 4.3]
-const SYS_OSC4: PAddr = 0x1000001C;
+const SYS_OSC4: PAddr = 0x1000001c;
 
 // UART0 memory base address [virtualpb-ug 4.25]
 const UART0_BASE: PAddr = 0x101f1000;
