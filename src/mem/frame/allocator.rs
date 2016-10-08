@@ -1,5 +1,4 @@
 use mem::info::{krnl_start, krnl_end};
-
 use super::{Frame, FRAME_SIZE};
 
 
@@ -12,11 +11,15 @@ const NUM_BITMAP_WORDS: usize = NUM_FRAMES / 64;
 
 pub struct Allocator {
     used: Bitmap, // tracks the used page frames
+    initialized: bool,
 }
 
 impl Allocator {
     pub const fn new() -> Self {
-        Allocator { used: Bitmap([0; NUM_BITMAP_WORDS]) }
+        Allocator {
+            used: Bitmap([0; NUM_BITMAP_WORDS]),
+            initialized: false,
+        }
     }
 
     pub fn init(&mut self) {
@@ -27,9 +30,14 @@ impl Allocator {
         for frame in Frame::range_incl(first_kframe, last_kframe) {
             self.used.set(frame.0);
         }
+        self.initialized = true;
     }
 
     pub fn alloc(&mut self) -> Option<Frame> {
+        if !self.initialized {
+            self.init();
+        }
+
         self.used.first_free().and_then(|n| {
             self.used.set(n);
             Some(Frame(n))
@@ -37,7 +45,8 @@ impl Allocator {
     }
 
     pub fn free(&mut self, frame: Frame) {
-        self.used.clear(frame.0)
+        assert!(self.initialized);
+        self.used.clear(frame.0);
     }
 }
 
