@@ -1,11 +1,10 @@
 #![feature(lang_items)]
 #![feature(asm)]
 #![feature(const_fn)]
+#![feature(custom_attribute)]
 #![no_std]
 
 use core::fmt;
-
-use mem::info::*;
 
 extern crate rlibc;
 extern crate spin;
@@ -22,14 +21,9 @@ mod usermode;
 pub extern "C" fn kernel() -> ! {
     println!("Reached the kernel.");
 
-    println!("kernel loaded at: {:#x}-{:#x}", krnl_start(), krnl_end());
-    println!(".text:   {:#x}-{:#x}", text_start(), text_end());
-    println!(".rodata: {:#x}-{:#x}", rodata_start(), rodata_end());
-    println!(".data:   {:#x}-{:#x}", data_start(), data_end());
-    println!(".bss:    {:#x}-{:#x}", bss_start(), bss_end());
-    println!("kernel stack: {:#x}-{:#x}", stack_bottom(), stack_top());
-
-    mem::init_mm();
+    println!("Initializing MM...");
+    unsafe { mem::init_mm() }
+    println!("MM initialized.");
 
     loop {}
 

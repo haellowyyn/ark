@@ -1,13 +1,11 @@
+pub use self::init::init_mm;
+
 pub mod info;
+mod init;
 mod frame;
+mod paging;
+mod tlb;
 
 
-type PAddr = usize;
-
-/// Initialize memory management.
-pub fn init_mm() {
-    {
-        let mut frame_allocator = frame::ALLOCATOR.lock();
-        frame_allocator.init();
-    }
-}
+pub type PAddr = usize;
+pub type VAddr = usize;
