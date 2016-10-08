@@ -4,20 +4,21 @@
 //! The PL110 implemented in the versatilepb differs slightly from the specification
 //! in [pl110-trm]. See [versatilepb-ug 4.7.1].
 
-use board::SYS_OSC4;
-use board::CLCDC_BASE;
+use mem::PAddr;
+use super::SYS_OSC4;
+use super::CLCDC_BASE;
 
 // CLCDC register offsets [pl110-trm 3.1]
 // horizontal axis panel control register
-const LCDTIM0: *mut u32 = (CLCDC_BASE + 0x000) as *mut u32;
+const LCDTIM0: PAddr = CLCDC_BASE + 0x000;
 // vertical axis panal control register
-const LCDTIM1: *mut u32 = (CLCDC_BASE + 0x004) as *mut u32;
+const LCDTIM1: PAddr = CLCDC_BASE + 0x004;
 // clock and signal polarity control register
-const LCDTIM2: *mut u32 = (CLCDC_BASE + 0x008) as *mut u32;
+const LCDTIM2: PAddr = CLCDC_BASE + 0x008;
 // upper panel frame base address register
-const LCDUPBASE: *mut u32 = (CLCDC_BASE + 0x010) as *mut u32;
+const LCDUPBASE: PAddr = CLCDC_BASE + 0x010;
 // control register
-const LCDCTRL: *mut u32 = (CLCDC_BASE + 0x018) as *mut u32;
+const LCDCTRL: PAddr = CLCDC_BASE + 0x018;
 
 // LCDCTRL flags [pl110-trm 3.2.7]
 const LCDEN: u32 = 0b1 << 0;        // LCD controller enable
@@ -36,13 +37,13 @@ pub unsafe fn init(width: usize, height: usize, framebase: u32) {
         (800, 600) => (0x2cac, 0x1313A4C4, 0x0505F657, 0x071F1800),
         _ => panic!("unsupported screen resolution"),
     };
-    *SYS_OSC4 = osc4;
-    *LCDTIM0 = tim0;
-    *LCDTIM1 = tim1;
-    *LCDTIM2 = tim2;
+    *mmio_ptr!(SYS_OSC4, u32) = osc4;
+    *mmio_ptr!(LCDTIM0, u32) = tim0;
+    *mmio_ptr!(LCDTIM1, u32) = tim1;
+    *mmio_ptr!(LCDTIM2, u32) = tim2;
 
     // Load address of frame buffer.
-    *LCDUPBASE = framebase;
+    *mmio_ptr!(LCDUPBASE, u32) = framebase;
     // Set control flags.
-    *LCDCTRL = LCDEN | LCDBPP_24 | LCDTFT | LCDPWR;
+    *mmio_ptr!(LCDCTRL, u32) = LCDEN | LCDBPP_24 | LCDTFT | LCDPWR;
 }
