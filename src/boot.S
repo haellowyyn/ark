@@ -34,28 +34,15 @@ _entry:
   ldr x0, =0x500190019
 	msr TCR_EL1, x0
 
-  /* Set required entries in the boot translation table:
+  /* Setup the boot translation table:
    * - first entry identity maps the first 1 GB of physical memory
-   * - last entry points to the beginning of the translation table, enabling
-   *   recusive mapping [http://wiki.osdev.org/Page_Tables#Recursive_mapping]
    *
-   * We must subtract 0xffffff8000000000 from the VA of the boot translation
-	 * table to optain its PA.
+   * We subtract the kernel space offset from the VA of the
+   * boot translation table to obtain its PA.
    */
   ldr x1, =(_boot_translation_table - 0xffffff8000000000)
-  /* First entry:
-   * - last two bits = 01 -> block descriptor
-   * - set access flag to prevent AF faults
-   */
   ldr x0, =0x0000000000000401
   str x0, [x1, 0]
-  /* Last entry:
-   * - last two bits = 11 -> table descriptor, page descriptor at level 3
-   * - set access flag to prevent AF faults at level 3
-   */
-  ldr x2, =0x403
-  orr x0, x1, x2
-  str x0, [x1, 511 * 8]
 
 	/* Point TTBR0_EL1 and TTBR1_EL1 to the boot translation table. */
 	msr TTBR0_EL1, x1
